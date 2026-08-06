@@ -1,0 +1,48 @@
+# Build & push images for the services changed by a merge to main.
+# Dispatched by the DuploCloud DevEnvironment extension's Build & Push stage, which first
+# refreshes the REGISTRY_TOKEN Actions variable (a short-lived Google Artifact Registry oauth
+# token minted from the platform's GCP scope) and then triggers this workflow with the commit
+# SHA and the changed-service list it derived from the push webhook.
+name: build-images
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit SHA to build (also the image tag, shortened to 7 chars)
+        required: true
+      services:
+        description: JSON array of changed services, e.g. ["frontend","cartservice"]
+        required: true
+
+run-name: "build-images ${{ inputs.sha }} — ${{ inputs.services }}"
+
+env:
+  REGISTRY: us-east1-docker.pkg.dev
+  IMAGE_PREFIX: us-east1-docker.pkg.dev/release-engineering-499906/release-eng-scratch-docker-registry
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(inputs.services) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+      - name: Docker login to Artifact Registry
+        run: |
+          echo "${{ vars.REGISTRY_TOKEN }}" | docker login "$REGISTRY" \
+            --username oauth2accesstoken --password-stdin
+      - name: Build and push ${{ matrix.service }}
+        run: |
+          CTX="src/${{ matrix.service }}"
+          [ "${{ matrix.service }}" = "cartservice" ] && CTX="src/cartservice/src"
+          SHORT_SHA="$(echo "${{ inputs.sha }}" | cut -c1-7)"
+          TAG="$IMAGE_PREFIX/${{ matrix.service }}:$SHORT_SHA"
+          echo "Building $TAG from $CTX"
+          docker build -t "$TAG" "$CTX"
+          docker push "$TAG"
+          echo "### Pushed \`$TAG\`" >> "$GITHUB_STEP_SUMMARY"

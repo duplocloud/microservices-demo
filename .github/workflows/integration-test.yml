@@ -1,0 +1,67 @@
+# Integration (user-journey) tests against a deployed Online Boutique URL.
+# Dispatched by the DuploCloud DevEnvironment extension's Integration Test stage with the
+# ephemeral environment's preview URL. Each journey is its own step so the extension can map
+# step name + conclusion straight into its TestResults (fail-fast: later steps show as skipped).
+name: integration-test
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Base URL of the environment under test (e.g. http://1.2.3.4)
+        required: true
+      sha:
+        description: Commit SHA under test (informational)
+        required: false
+        default: ""
+
+run-name: "integration-test ${{ inputs.sha }} @ ${{ inputs.base_url }}"
+
+jobs:
+  journey:
+    runs-on: ubuntu-latest
+    env:
+      BASE: ${{ inputs.base_url }}
+      JAR: /tmp/cookies.txt
+      PRODUCT: OLJCESPC7Z
+    steps:
+      - name: Wait for frontend to answer
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS -m 10 -o /dev/null "$BASE/" && exit 0 || sleep 5
+          done
+          echo "frontend never answered at $BASE"; exit 1
+      - name: Home page lists products
+        run: |
+          BODY="$(curl -fsS -m 15 -c "$JAR" "$BASE/")"
+          echo "$BODY" | grep -q "$PRODUCT" || { echo "product $PRODUCT not on home page"; exit 1; }
+      - name: Product page renders
+        run: |
+          curl -fsS -m 15 -b "$JAR" -c "$JAR" "$BASE/product/$PRODUCT" | grep -qi "Sunglasses" \
+            || { echo "product page did not render"; exit 1; }
+      - name: Switch currency to EUR
+        run: |
+          curl -fsS -m 15 -b "$JAR" -c "$JAR" -L -d "currency_code=EUR" "$BASE/setCurrency" \
+            | grep -q "€" || { echo "currency did not switch to EUR"; exit 1; }
+      - name: Add product to cart
+        run: |
+          curl -fsS -m 15 -b "$JAR" -c "$JAR" -L -d "product_id=$PRODUCT&quantity=2" "$BASE/cart" \
+            | grep -qi "cart" || { echo "add-to-cart failed"; exit 1; }
+      - name: Cart shows the item
+        run: |
+          curl -fsS -m 15 -b "$JAR" -c "$JAR" "$BASE/cart" | grep -q "$PRODUCT" \
+            || { echo "cart does not contain $PRODUCT"; exit 1; }
+      - name: Checkout completes an order
+        run: |
+          curl -fsS -m 20 -b "$JAR" -c "$JAR" -L "$BASE/cart/checkout" \
+            -d "email=someone@example.com" \
+            -d "street_address=1600 Amphitheatre Parkway" \
+            -d "zip_code=94043" \
+            -d "city=Mountain View" \
+            -d "state=CA" \
+            -d "country=United States" \
+            -d "credit_card_number=4432801561520454" \
+            -d "credit_card_expiration_month=1" \
+            -d "credit_card_expiration_year=2030" \
+            -d "credit_card_cvv=672" \
+            | grep -qi "order" || { echo "checkout did not complete"; exit 1; }
