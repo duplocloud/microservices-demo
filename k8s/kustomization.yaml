@@ -13,40 +13,40 @@ commonLabels:
 
 images:
   - name: adservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/adservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/adservice
     newTag: main
   - name: cartservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/cartservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/cartservice
     newTag: main
   - name: checkoutservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/checkoutservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/checkoutservice
     newTag: main
   - name: currencyservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/currencyservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/currencyservice
     newTag: main
   - name: emailservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/emailservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/emailservice
     newTag: main
   - name: frontend
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/frontend
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/frontend
     newTag: main
   - name: loadgenerator
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/loadgenerator
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/loadgenerator
     newTag: main
   - name: paymentservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/paymentservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/paymentservice
     newTag: main
   - name: productcatalogservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/productcatalogservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/productcatalogservice
     newTag: main
   - name: recommendationservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/recommendationservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/recommendationservice
     newTag: main
   - name: shippingservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/shippingservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/shippingservice
     newTag: main
   - name: shoppingassistantservice
-    newName: 805863115079.dkr.ecr.us-east-1.amazonaws.com/microservices-demo/shoppingassistantservice
+    newName: 805863115079.dkr.ecr.us-west-2.amazonaws.com/microservices-demo/shoppingassistantservice
     newTag: main
 
 patches:
