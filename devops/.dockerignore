@@ -1,0 +1,26 @@
+# Place a copy of this file as src/frontend/.dockerignore if you want it
+# picked up automatically by `docker build src/frontend`. Kept under devops/
+# here so we do not overwrite the existing (minimal) src/frontend/.dockerignore.
+
+.git
+.gitignore
+.github
+**/*.md
+**/*_test.go
+**/testdata
+vendor/
+bin/
+dist/
+*.log
+.env
+.env.*
+.vscode
+.idea
+Dockerfile
+devops/
+deploy/
+terraform/
+kustomize/
+helm-chart/
+istio-manifests/
+docs/
