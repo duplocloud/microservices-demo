@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-config
+data:
+  PORT: "8000"
+  # The upstream Online Boutique frontend needs the gRPC backend addresses.
+  # Point these at the in-cluster Services for the other microservices once
+  # they are deployed (see kubernetes-manifests/ in the repo root for
+  # reference values), e.g.:
+  # PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+  # CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+  # CART_SERVICE_ADDR: "cartservice:7070"
+  # RECOMMENDATION_SERVICE_ADDR: "recommendationservice:8080"
+  # CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
+  # SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+  # AD_SERVICE_ADDR: "adservice:9555"
+  ENABLE_TRACING: "0"
+  ENABLE_PROFILER: "0"
