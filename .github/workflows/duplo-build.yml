@@ -15,7 +15,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  REGISTRY: 813590939111.dkr.ecr.us-east-1.amazonaws.com
   REPO_PREFIX: microservices-demo
 
 jobs:
@@ -79,6 +78,11 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr-login
+
+      - name: Resolve registry
+        id: registry
+        run: echo "registry=${{ steps.ecr-login.outputs.registry }}" >> "$GITHUB_OUTPUT"
 
       - name: Ensure ECR repository exists
         run: |
@@ -95,5 +99,5 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_PREFIX }}/${{ matrix.service }}:${{ steps.tags.outputs.branch_slug }}
-            ${{ env.REGISTRY }}/${{ env.REPO_PREFIX }}/${{ matrix.service }}:${{ steps.tags.outputs.sha_tag }}
+            ${{ steps.registry.outputs.registry }}/${{ env.REPO_PREFIX }}/${{ matrix.service }}:${{ steps.tags.outputs.branch_slug }}
+            ${{ steps.registry.outputs.registry }}/${{ env.REPO_PREFIX }}/${{ matrix.service }}:${{ steps.tags.outputs.sha_tag }}
